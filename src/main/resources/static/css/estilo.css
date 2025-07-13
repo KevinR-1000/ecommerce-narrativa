@@ -1,0 +1,323 @@
+/* Importaciones de fuentes (si las necesitas) */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&family=Titillium+Web:200;300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+/* ======================================================= */
+/* === ESTILOS PARA LA PÁGINA DE CATEGORÍA (NUEVOS) === */
+/* ======================================================= */
+
+/* CONTENEDOR PRINCIPAL Y TÍTULO DE PÁGINA */
+.contenedor {
+    max-width: 1200px;
+    padding: 20px;
+    margin: auto;
+}
+
+main {
+    padding-top: 100px; /* Espacio para el header fijo */
+}
+
+.category-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-principal);
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--color-acento-sutil);
+}
+
+/* BARRA DE SUBCATEGORÍAS HORIZONTAL */
+.subcategory-nav {
+    width: 100%;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: center;
+}
+.subcategory-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+.subcategory-nav li a {
+    display: block;
+    padding: 10px 20px;
+    border: 1px solid var(--color-acento-sutil);
+    border-radius: 20px;
+    text-decoration: none;
+    color: var(--color-texto-cuerpo);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.subcategory-nav li a:hover {
+    background-color: var(--color-acento-sutil);
+    color: var(--color-principal);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.subcategory-nav li a.active {
+    background-color: var(--color-principal);
+    color: white;
+    border-color: var(--color-principal);
+}
+
+/* CUADRÍCULA DE PRODUCTOS (GRID) */
+.contenedor-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 30px;
+    width: 100%;
+}
+.item {
+    background-color: #FFFFFF;
+    border: 1px solid #EAE0D1;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+.titulo-item {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 5px;
+    height: 48px;
+    line-height: 1.2;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.autor-item {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 15px;
+    height: 20px;
+}
+.img-item-wrapper {
+    width: 100%;
+    height: 240px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+.img-item {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+}
+.precio-item {
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: var(--color-principal, #5C4033);
+    margin: 15px 0;
+}
+.boton-item {
+    display: inline-block;
+    border: none;
+    background-color: var(--color-principal, #5C4033);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+.boton-item:hover {
+    background-color: #4B3F38;
+}
+
+/* --- Estilos para la Alerta Personalizada (Toast) --- */
+.custom-alert {
+    position: fixed;
+    top: 100px; /* Un poco más abajo para no chocar con el header */
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: #fff;
+    font-size: 1rem;
+    z-index: 9999;
+
+    transform: translateX(120%);
+    opacity: 0;
+    visibility: hidden;
+
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.custom-alert.show {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Éxito (Login, Compra exitosa) */
+.custom-alert.alert-success {
+    background-color: #2a9d8f;
+    border-left: 5px solid #264653;
+}
+
+/* Información (Logout) */
+.custom-alert.alert-info {
+    background-color: #585149;
+    border-left: 5px solid #d4c4a3;
+}
+
+/* Error (Login fallido, validación) */
+.custom-alert.alert-error {
+    background-color: #e76f51; /* Un color naranja/rojo para errores */
+    border-left: 5px solid #c13c13;
+}
+
+
+/* --- Estilos para el Modal de Pago y sus Validaciones --- */
+.payment-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 2000; /* Más alto que el header */
+    justify-content: center;
+    align-items: center;
+}
+
+.payment-modal-overlay.visible {
+    display: flex;
+}
+
+.payment-modal {
+    background: #FDF9F3; /* Usando un color de tu paleta */
+    color: #4B3F38; /* Usando un color de tu paleta */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+}
+
+.payment-modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #7A6F62;
+}
+
+.payment-modal h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--color-principal);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.btn-confirmar-pago {
+    width: 100%;
+    padding: 12px;
+    background-color: #2a9d8f; /* Usando el mismo verde que la alerta de éxito */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.btn-confirmar-pago:hover {
+    background-color: #264653;
+}
+
+.btn-confirmar-pago:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.payment-error {
+    color: #c13c13;
+    background-color: #fde8e1;
+    border: 1px solid #e76f51;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+.spinner-border {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #fff;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Estilo para los mensajes de error de los campos */
+.error-message {
+    color: #c13c13; /* Un rojo más oscuro para mejor contraste */
+    font-size: 0.8rem;
+    display: block;
+    height: 1em;
+    margin-top: 4px;
+}
+
+/* Estilo para el borde del input cuando es inválido */
+input.invalid {
+    border-color: #c13c13;
+    box-shadow: 0 0 0 1px #e76f51;
+}

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Ficción | Narrativa.io</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="/img/logoprincipal.jpg">
+    <!-- Estilos específicos y generales -->
+    <link rel="stylesheet" href="/css/estilo.css">
+    <link rel="stylesheet" href="/css/productos.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+<!-- ===== HEADER DINÁMICO ===== -->
+<header class="header">
+    <div class="logo">
+        <a th:href="@{/}"><img src="/img/narrativalogo.jpg" alt="logo-narrativa.io"/></a>
+    </div>
+    <nav class="nav-desktop">
+        <ul class="nav-links">
+            <li><a th:href="@{/}">Inicio</a></li>
+            <li><a th:href="@{/ficcion}">Ficción</a></li>
+            <li><a th:href="@{/no-ficcion}">No Ficción</a></li>
+            <li><a th:href="@{/infantil-juvenil}">Infantil y Juvenil</a></li>
+        </ul>
+    </nav>
+    <div class="header-right-controls">
+        <button id="open-search-btn" class="header-icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button id="open-cart-btn" class="header-icon-btn"><i class="fa-solid fa-cart-shopping"></i></button>
+        <div class="login">
+            <div sec:authorize="isAnonymous()"><a id="loginPC" th:href="@{/login}"><img src="/icons/icon-user.svg" alt="ingresar"></a></div>
+            <div sec:authorize="isAuthenticated()" style="display: flex; align-items: center;">
+                <span class="username-display" sec:authentication="name"></span>
+                <form id="logoutForm" th:action="@{/logout}" method="post" style="display: inline;">
+                    <a href="#" onclick="document.getElementById('logoutForm').submit();" title="Cerrar sesión" class="logout-icon"><i class="fa-solid fa-right-from-bracket"></i></a>
+                </form>
+            </div>
+        </div>
+        <button id="btnTema">🌙</button>
+        <button id="hamburger-btn" class="hamburger-btn"><i class="fa-solid fa-bars"></i></button>
+    </div>
+</header>
+
+<nav id="mobile-nav" class="mobile-nav">
+    <button id="close-mobile-nav-btn" class="close-mobile-nav-btn"><i class="fa-solid fa-xmark"></i></button>
+    <ul class="mobile-nav-links">
+        <li><a th:href="@{/}">Inicio</a></li>
+        <li><a th:href="@{/ficcion}">Ficción</a></li>
+        <li><a th:href="@{/no-ficcion}">No Ficción</a></li>
+        <li><a th:href="@{/infantil-juvenil}">Infantil y Juvenil</a></li>
+    </ul>
+</nav>
+<!-- ===== FIN DEL HEADER ===== -->
+
+<main>
+    <section class="contenedor">
+        <!-- Carrito de Compras -->
+        <div class="carrito" id="carrito">
+            <div class="header-carrito">
+                <h2>Tu Carrito</h2>
+                <button class="close-cart-btn">X</button>
+            </div>
+            <div class="carrito-items"></div>
+            <div class="carrito-total">
+                <div class="fila"><strong>Tu Total</strong><span class="carrito-precio-total">$0.00</span></div>
+                <button class="btn-pagar">Pagar <i class="fa-solid fa-bag-shopping"></i></button>
+            </div>
+        </div>
+
+        <!-- Título de la Categoría (Dinámico) -->
+        <h1 class="category-title" th:text="${nombreCategoria}">Ficción</h1>
+
+        <!-- BARRA DE NAVEGACIÓN DE SUBCATEGORÍAS (DINÁMICA) -->
+        <nav class="subcategory-nav">
+            <ul>
+                <!-- El enlace "Ver Todos" apunta a la URL correcta -->
+                <li><a th:href="@{/ficcion}" th:classappend="${categoriaActual == 'Todos'} ? 'active' : ''">Ver Todos</a></li>
+                <!-- El bucle genera los enlaces de subcategorías correctos -->
+                <li th:each="subcat : ${subcategorias}"><a th:href="@{/ficcion(subcategoria=${subcat})}" th:text="${subcat}" th:classappend="${categoriaActual == subcat} ? 'active' : ''">Subcategoría</a></li>
+            </ul>
+        </nav>
+
+        <!-- CONTENEDOR DE PRODUCTOS (GRID) -->
+        <div class="contenedor-items">
+            <!-- Bucle dinámico para mostrar los productos -->
+            <div class="item" th:each="producto : ${productos}">
+                <span class="titulo-item" th:text="${producto.titulo}">Título</span>
+                <span class="autor-item" th:text="${producto.autor}">Autor</span>
+                <div class="img-item-wrapper">
+                    <img th:src="${producto.urlImagen}" th:alt="'Portada de ' + ${producto.titulo}" class="img-item">
+                </div>
+                <span class="precio-item" th:text="'$' + ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}">$0.00</span>
+                <button class="boton-item"
+                        onclick="agregarAlCarritoClicked(event)"
+                        th:data-product-id="${producto.idProducto}"
+                        th:data-product-name="${producto.titulo}"
+                        th:data-product-price="${producto.precio}"
+                        th:data-product-image="${producto.urlImagen}">
+                    Agregar al Carrito
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- ===== INICIO MODAL DE PAGO ===== -->
+<div id="payment-modal-overlay" class="payment-modal-overlay">
+    <div id="payment-modal" class="payment-modal">
+        <button id="close-payment-modal" class="payment-modal-close-btn">×</button>
+        <h2>Procesar Pago</h2>
+        <div id="payment-error-message" class="payment-error"></div>
+        <form id="payment-form" novalidate>
+            <div class="form-group">
+                <label for="card-number">Número de Tarjeta</label>
+                <input type="text" id="card-number" placeholder="0000 0000 0000 0000" required>
+                <span class="error-message" id="card-number-error"></span>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="card-expiry">Vencimiento (MM/AA)</label>
+                    <input type="text" id="card-expiry" placeholder="MM/AA" required>
+                    <span class="error-message" id="card-expiry-error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="card-cvv">CVV</label>
+                    <input type="text" id="card-cvv" placeholder="123" required>
+                    <span class="error-message" id="card-cvv-error"></span>
+                </div>
+            </div>
+            <button type="submit" class="btn-confirmar-pago">
+                <span id="confirm-payment-text">Confirmar Pago</span>
+                <div id="payment-spinner" class="spinner-border" role="status" style="display: none;"></div>
+            </button>
+        </form>
+    </div>
+</div>
+<!-- ===== FIN MODAL DE PAGO ===== -->
+
+<!-- === FOOTER === -->
+<footer class="footer">
+    <div class="footer-1">
+        <div class="box-Empresa"><h5>Narrativa.io</h5></div>
+        <div class="box-rs">
+            <h5>Siguenos:</h5>
+            <ul>
+                <li><a href="https://www.facebook.com/narrativa.io/"><img src="/icons/icon-facebook.svg" alt="icono-facebook"></a></li>
+                <li><a href="https://www.youtube.com/narrativa.io"><img src="/icons/icon-youtube.svg" alt="icono-youtube"></a></li>
+                <li><a href="https://www.instagram.com/narrativa.io/"><img src="/icons/icon-instagram.svg" alt="icono-instagram"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-2">
+        <div class="box-creditos"><p>©2025 · Todos los derechos reservados.</p></div>
+        <div class="box-legal"><a href="#">Política de Privacidad </a><a href="#">Política de Cookies </a><a href="#">Aviso Legal</a></div>
+    </div>
+</footer>
+
+<!-- ===== INICIO: CÓDIGO AÑADIDO/CORREGIDO PARA ALERTAS Y SCRIPTS ===== -->
+
+<!-- 1. Contenedor HTML para la alerta personalizada -->
+<div id="custom-alert" class="custom-alert">
+    <span id="custom-alert-message"></span>
+</div>
+
+<!-- 2. "Puente" de datos unificado entre Thymeleaf y JavaScript -->
+<script th:inline="javascript">
+
+    // Inyecta el mensaje del backend (si existe) en una variable JS
+    const serverMessage = /*[[${alertMessage}]]*/ null;
+
+    // Inyecta el estado de login en una variable global para el carrito
+    var globalIsLoggedIn = /*[[${#authorization.expression('isAuthenticated()')}]]*/ false;
+
+</script>
+
+<!-- 3. Carga del archivo JS principal. 'defer' asegura que se ejecute después de cargar el HTML -->
+<script src="/js/javascript.js" defer></script>
+
+<!-- ===== FIN: CÓDIGO AÑADIDO/CORREGIDO ===== -->
+
+</body>
+</html>

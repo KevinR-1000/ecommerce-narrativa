@@ -1,0 +1,92 @@
+<!-- Archivo: src/main/resources/templates/pago-exitoso.html -->
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>¡Compra Exitosa! | Narrativa.io</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Cargamos los estilos globales para que el header y footer se vean bien -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        .status-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: calc(100vh - 170px); /* Ocupa la pantalla menos header y footer */
+            padding: 40px;
+        }
+        .status-icon {
+            font-size: 6rem;
+            color: #2a9d8f; /* Verde éxito */
+            margin-bottom: 25px;
+            animation: bounceIn 0.8s ease-out;
+        }
+        .status-container h1 {
+            font-size: 2.5rem;
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        .status-container p {
+            font-size: 1.2rem;
+            max-width: 500px;
+            margin-bottom: 35px;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+        .status-button {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .status-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Incluimos el header estándar (copia y pega tu header aquí) -->
+<header class="header">
+    <!-- ... Tu código completo del header ... -->
+</header>
+
+<main>
+    <div class="status-container">
+        <div class="status-icon">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <h1>¡Gracias por tu compra!</h1>
+        <p>Tu pago ha sido procesado exitosamente. En breve, la orden será registrada en nuestro sistema y recibirás una confirmación por correo.</p>
+        <a th:href="@{/}" class="status-button">Seguir Navegando</a>
+    </div>
+</main>
+
+<!-- Incluimos el footer estándar (copia y pega tu footer aquí) -->
+<footer class="footer">
+    <!-- ... Tu código completo del footer ... -->
+</footer>
+
+<!-- Script para limpiar el carrito después de una compra exitosa -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Limpiamos el LocalStorage para que el carrito aparezca vacío
+        localStorage.removeItem('shoppingCart');
+    });
+</script>
+</body>
+</html>

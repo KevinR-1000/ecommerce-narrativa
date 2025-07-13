@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ingreso | Narrativa.io</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/img/logoprincipal.jpg">
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Importante que esté aquí para los estilos de la alerta -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+<!-- Header (sin cambios) -->
+<header class="header">
+    <div class="logo">
+        <a th:href="@{/}"><img src="/img/narrativalogo.jpg" alt="logo-narrativa.io"/></a>
+    </div>
+    <nav class="nav-desktop">
+        <ul class="nav-links">
+            <li><a th:href="@{/}">Inicio</a></li>
+            <li><a th:href="@{/ficcion}">Ficción</a></li>
+            <li><a th:href="@{/no-ficcion}">No Ficción</a></li>
+            <li><a th:href="@{/infantil-juvenil}">Infantil y Juvenil</a></li>
+        </ul>
+    </nav>
+    <div class="header-right-controls">
+        <div class="login">
+            <div sec:authorize="isAnonymous()">
+                <a id="loginPC" th:href="@{/login}"><img src="/icons/icon-user.svg" alt="ingresar"></a>
+            </div>
+            <div sec:authorize="isAuthenticated()" style="display: flex; align-items: center;">
+                <span class="username-display" sec:authentication="name"></span>
+                <form id="logoutForm" th:action="@{/logout}" method="post" style="display: inline;">
+                    <a href="#" onclick="document.getElementById('logoutForm').submit();" title="Cerrar sesión" class="logout-icon">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </form>
+            </div>
+        </div>
+        <button id="btnTema">🌙</button>
+        <button id="hamburger-btn" class="hamburger-btn"><i class="fa-solid fa-bars"></i></button>
+    </div>
+</header>
+
+<nav id="mobile-nav" class="mobile-nav">
+    <button id="close-mobile-nav-btn" class="close-mobile-nav-btn"><i class="fa-solid fa-xmark"></i></button>
+    <ul class="mobile-nav-links">
+        <li><a th:href="@{/}">Inicio</a></li>
+        <li><a th:href="@{/ficcion}">Ficción</a></li>
+        <li><a th:href="@{/no-ficcion}">No Ficción</a></li>
+        <li><a th:href="@{/infantil-juvenil}">Infantil y Juvenil</a></li>
+    </ul>
+</nav>
+
+<div class="background">
+    <div class="container" id="container">
+
+        <!-- ===== FORMULARIO DE REGISTRO ===== -->
+        <div class="form-container sign-up">
+            <form method="POST" th:action="@{/registro}">
+                <h1>Crear cuenta</h1>
+                <div class="social-icons">
+                    <a class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+                    <a class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a class="icon"><i class="fa-brands fa-github"></i></a>
+                </div>
+                <span>o usa tu correo electrónico para registrarte</span>
+                <input type="text" name="primerNombre" placeholder="Primer Nombre" required>
+                <input type="text" name="segundoNombre" placeholder="Segundo Nombre (Opcional)">
+                <input type="text" name="primerApellido" placeholder="Primer Apellido" required>
+                <input type="text" name="segundoApellido" placeholder="Segundo Apellido (Opcional)">
+                <input type="tel" name="telefono" placeholder="Número de teléfono" required>
+                <input type="email" name="correo" placeholder="Correo electrónico" required>
+                <input type="password" name="contrasena" placeholder="Contraseña" required>
+                <input type="text" name="direccion" placeholder="Dirección (Opcional)">
+                <button type="submit">Registrarse</button>
+            </form>
+        </div>
+
+        <!-- ===== FORMULARIO DE INICIO DE SESIÓN (LOGIN) ===== -->
+        <div class="form-container sign-in">
+            <form method="POST" th:action="@{/login}">
+                <h1>Iniciar sesión</h1>
+                <div class="social-icons">
+                    <a class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+                    <a class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a class="icon"><i class="fa-brands fa-github"></i></a>
+                </div>
+                <span>o usa tu correo y contraseña</span>
+                <input type="email" name="username" placeholder="Correo electrónico" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <button type="submit">Iniciar sesión</button>
+                <!-- Los mensajes de error y éxito estáticos han sido eliminados -->
+            </form>
+        </div>
+
+        <!-- Paneles de animación (sin cambios) -->
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left"><h1>¡Bienvenido de Nuevo!</h1><p>Ingresa tus datos personales para usar todas las funciones del sitio</p><button class="hidden" id="login">Iniciar sesión</button></div>
+                <div class="toggle-panel toggle-right"><h1>¡Hola, amigo!</h1><p>Regístrate con tus datos personales para usar todas las funciones del sitio</p><button class="hidden" id="register">Registrarse</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== INICIO: CÓDIGO AÑADIDO/CORREGIDO PARA ALERTAS Y SCRIPTS ===== -->
+
+<!-- 1. Contenedor HTML para la alerta personalizada (invisible hasta que se active) -->
+<div id="custom-alert" class="custom-alert">
+    <span id="custom-alert-message"></span>
+</div>
+
+<!-- 2. "Puente" de datos unificado entre Thymeleaf y JavaScript -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Inyecta el mensaje del backend (si existe) en una variable JS
+    const serverMessage = /*[[${alertMessage}]]*/ null;
+
+    // Inyecta el estado de login (aquí siempre será false)
+    var globalIsLoggedIn = /*[[${#authorization.expression('isAuthenticated()')}]]*/ false;
+    /*]]>*/
+</script>
+
+<!-- 3. Carga de los archivos JS. 'defer' asegura que se ejecuten después de cargar el HTML -->
+<script src="/js/login.js" defer></script>     <!-- Lógica para el toggle de registro/login -->
+<script src="/js/javascript.js" defer></script> <!-- Lógica principal, incluyendo las alertas -->
+
+<!-- ===== FIN: CÓDIGO AÑADIDO/CORREGIDO ===== -->
+
+</body>
+</html>

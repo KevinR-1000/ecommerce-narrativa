@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <!-- Metas PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Narrativa.io">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon-180x180.png">
+
+    <!-- Metas estándar y SEO -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrativa.io | Tu Universo de Historias y Conocimiento</title>
+    <meta name="description" content="Narrativa.io: Tu librería online innovadora. Descubre ficción, conocimiento y libros para jóvenes. Explora, lee y conecta con nuestra comunidad de lectores.">
+    <meta name="keywords" content="Narrativa.io, librería online, libros, ficción, no ficción, conocimiento, jóvenes, literatura, cuentos, novelas, autoayuda, historia, biografías, reseñas, comunidad, lectura, PWA">
+
+    <!-- Estilos -->
+    <link rel="icon" href="/img/logoprincipal.jpg">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/nosotros.css">
+    <link rel="stylesheet" href="/css/productos.css"> <!-- Necesario para los estilos del carrito -->
+    <!-- Font Awesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+<!-- ===== HEADER CON TODAS LAS FUNCIONALIDADES ===== -->
+<header class="header">
+    <div class="logo">
+        <a th:href="@{/}"><img src="/img/narrativalogo.jpg" alt="logo-narrativa.io"/></a>
+    </div>
+    <nav class="nav-desktop">
+        <ul class="nav-links">
+            <li><a th:href="@{/}">Inicio</a></li>
+            <li><a th:href="@{/ficcion}">Ficción</a></li>
+            <li><a th:href="@{/no-ficcion}">No Ficción</a></li>
+            <li><a th:href="@{/infantil-juvenil}">Infantil y Juvenil</a></li>
+        </ul>
+    </nav>
+    <div class="header-right-controls">
+        <button id="open-search-btn" class="header-icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button id="open-cart-btn" class="header-icon-btn"><i class="fa-solid fa-cart-shopping"></i></button>
+        <div class="login">
+            <div sec:authorize="isAnonymous()"><a id="loginPC" th:href="@{/login}"><img src="/icons/icon-user.svg" alt="ingresar"></a></div>
+            <div sec:authorize="isAuthenticated()" style="display: flex; align-items: center;">
+                <span class="username-display" sec:authentication="name"></span>
+                <form id="logoutForm" th:action="@{/logout}" method="post" style="display: inline;">
+                    <a href="#" onclick="document.getElementById('logoutForm').submit();" title="Cerrar sesión" class="logout-icon"><i class="fa-solid fa-right-from-bracket"></i></a>
+                </form>
+            </div>
+        </div>
+        <button id="btnTema">🌙</button>
+        <button id="hamburger-btn" class="hamburger-btn"><i class="fa-solid fa-bars"></i></button>
+    </div>
+</header>
+
+
+<!-- ===== PANELES FLOTANTES (OVERLAYS) ===== -->
+<nav id="mobile-nav" class="mobile-nav">
+    <button id="close-mobile-nav-btn" class="close-mobile-nav-btn"><i class="fa-solid fa-xmark"></i></button>
+    <ul class="mobile-nav-links">
+        <li><a th:href="@{/}">Inicio</a></li>
+        <li><a th:href="@{/ficcion}">Ficción</a></li>
+        <li><a th:href="@{/no-ficcion}">No Ficción</a></li>
+        <li><a th:href="@{/infantil-juvenil}">Infantil y Juvenil</a></li>
+    </ul>
+</nav>
+
+<div id="search-overlay" class="search-overlay">
+    <div class="search-content">
+        <button id="close-search-btn" class="close-search-btn">×</button>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Busca por título...">
+            <div id="search-suggestions" class="search-suggestions"></div>
+        </div>
+    </div>
+</div>
+
+<div class="carrito" id="carrito">
+    <div class="header-carrito">
+        <h2>Tu Carrito</h2>
+        <button class="close-cart-btn">X</button>
+    </div>
+    <div class="carrito-items"></div>
+    <div class="carrito-total">
+        <div class="fila"><strong>Tu Total</strong><span class="carrito-precio-total">$0.00</span></div>
+        <button class="btn-pagar">Pagar <i class="fa-solid fa-bag-shopping"></i></button>
+    </div>
+</div>
+<!-- ===== FIN DE PANELES FLOTANTES ===== -->
+
+<main>
+    <section class="contenedor-banner">
+        <div class="content-banner">
+            <div class="contenido">
+                <h2>Tu Próxima Gran Lectura</h2>
+                <p>"Sumérgete en un universo de historias y conocimiento."</p>
+                <div class="movil">
+                    <img src="/img/libreriaportada.jpg" alt="Libros y Lectura">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contenedor-historia">
+        <div class="title">
+            <h2>Sobre Narrativa.io</h2>
+        </div>
+        <div class="content-historia">
+            <div class="contenido-historia">
+                <p>
+                    En <b>Narrativa.io</b>, transformamos tu experiencia de lectura. Nacimos en Perú con el propósito de ser tu portal directo a historias fascinantes y conocimiento profundo, ofreciéndote un acceso innovador a la literatura. Nos dedicamos a seleccionar cuidadosamente libros que inspiran y educan, buscando ser tu aliado literario confiable a través de una experiencia de compra online transparente y un servicio al lector atento.
+                </p>
+            </div>
+            <div class="img-historia">
+                <img src="/img/banner1.jpg" alt="Comunidad de lectores y estantes de libros">
+            </div>
+        </div>
+    </section>
+
+    <section class="contenedor-productos">
+        <div class="title">
+            <h2>Explora Nuestros Mundos</h2>
+        </div>
+        <div class="content-productos">
+            <div class="categoria-producto">
+                <div class="titulo-producto">
+                    <h3>Ficción</h3>
+                </div>
+                <div class="contenido-producto">
+                    <div>
+                        <img src="/img/cienciayficcion.jpg" alt="Novelas y relatos de ficción">
+                        <button><a th:href="@{/ficcion}">Ver Novelas y Relatos</a></button>
+                    </div>
+                </div>
+            </div>
+            <div class="categoria-producto">
+                <div class="titulo-producto">
+                    <h3>No Ficción</h3>
+                </div>
+                <div class="contenido-producto">
+                    <div>
+                        <img src="/img/desarrollo2.jpg" alt="Libros de no ficción y aprendizaje">
+                        <button><a th:href="@{/no-ficcion}">Explorar Saber y Reflexión</a></button>
+                    </div>
+                </div>
+            </div>
+            <div class="categoria-producto">
+                <div class="titulo-producto">
+                    <h3>Infantil y Juvenil</h3>
+                </div>
+                <div class="contenido-producto">
+                    <div>
+                        <img src="/img/niñoslibros.jpg" alt="Libros para niños y jóvenes">
+                        <button><a th:href="@{/infantil-juvenil}">Descubrir Libros Jóvenes</a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contenedor-opiniones">
+        <div class="title">
+            <h2>La Experiencia Narrativa.io</h2>
+        </div>
+        <div class="content-opiniones">
+            <div class="opinion">
+                <div class="titulo-opinion">
+                    <h3>Descubre. Lee. Conecta.</h3>
+                </div>
+                <div class="contenido-opinion">
+                    <div>
+                        <p>
+                            En Narrativa.io, cada libro es una oportunidad. No solo te ofrecemos un catálogo extenso de <strong>Ficción</strong>, <strong>No Ficción</strong> y literatura para <strong>Infantil y Juvenil</strong>, sino una plataforma donde la experiencia del lector es lo primero. Explora colecciones curadas, déjate guiar por las <strong>reseñas de nuestra comunidad</strong> y recibe recomendaciones personalizadas. Gracias a nuestra tecnología PWA, tu librería está siempre contigo, rápida y accesible, incluso sin conexión. Sumérgete en Narrativa.io y vive la lectura como nunca antes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="footer-1">
+        <div class="box-Empresa">
+            <h5>Narrativa.io</h5>
+        </div>
+        <div class="box-rs">
+            <h5>Siguenos:</h5>
+            <ul>
+                <li><a href="https://www.facebook.com/narrativa.io"><img src="/icons/icon-facebook.svg" alt="icono-facebook"></a></li>
+                <li><a href="https://www.youtube.com/@narrativa.io"><img src="/icons/icon-youtube.svg" alt="icono-youtube"></a></li>
+                <li><a href="https://www.instagram.com/narrativa.io/"><img src="/icons/icon-instagram.svg" alt="icono-instagram"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-2">
+        <div class="box-creditos">
+            <p>©2025 · Todos los derechos reservados.</p>
+        </div>
+        <div class="box-legal">
+            <a href="#">Política de Privacidad </a>
+            <a href="#">Política de Cookies </a>
+            <a href="#">Aviso Legal</a>
+        </div>
+    </div>
+</footer>
+
+<!-- ===== INICIO: ELEMENTOS INVISIBLES Y SCRIPTS ===== -->
+<div id="custom-alert" class="custom-alert">
+    <span id="custom-alert-message"></span>
+</div>
+
+<div id="payment-modal-overlay" class="payment-modal-overlay">
+    <div id="payment-modal" class="payment-modal">
+        <button id="close-payment-modal" class="payment-modal-close-btn">×</button>
+        <h2>Procesar Pago</h2>
+        <div id="payment-error-message" class="payment-error"></div>
+        <form id="payment-form" novalidate>
+            <div class="form-group">
+                <label for="card-number">Número de Tarjeta</label>
+                <input type="text" id="card-number" placeholder="0000 0000 0000 0000" required>
+                <span class="error-message" id="card-number-error"></span>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="card-expiry">Vencimiento (MM/AA)</label>
+                    <input type="text" id="card-expiry" placeholder="MM/AA" required>
+                    <span class="error-message" id="card-expiry-error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="card-cvv">CVV</label>
+                    <input type="text" id="card-cvv" placeholder="123" required>
+                    <span class="error-message" id="card-cvv-error"></span>
+                </div>
+            </div>
+            <button type="submit" class="btn-confirmar-pago">
+                <span id="confirm-payment-text">Confirmar Pago</span>
+                <div id="payment-spinner" class="spinner-border" role="status" style="display: none;"></div>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const serverMessage = /*[[${alertMessage}]]*/ null;
+    var globalIsLoggedIn = /*[[${#authorization.expression('isAuthenticated()')}]]*/ false;
+    /*]]>*/
+</script>
+
+<script src="/js/javascript.js" defer></script>
+
+</body>
+</html>

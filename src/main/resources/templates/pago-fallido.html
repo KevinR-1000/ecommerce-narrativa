@@ -1,0 +1,46 @@
+<!-- Archivo: src/main/resources/templates/pago-fallido.html -->
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error en el Pago | Narrativa.io</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Usamos los mismos estilos base que la página de éxito -->
+    <style>
+        .status-container { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: calc(100vh - 170px); padding: 40px; }
+        .status-icon { font-size: 6rem; margin-bottom: 25px; }
+        .status-icon.error { color: #e76f51; animation: shake 0.5s; } /* Naranja/rojo error */
+        .status-container h1 { font-size: 2.5rem; font-family: 'Montserrat', sans-serif; margin-bottom: 15px; color: var(--text-color); }
+        .status-container p { font-size: 1.2rem; max-width: 500px; margin-bottom: 35px; line-height: 1.6; color: var(--text-color); }
+        .status-button { background-color: var(--header-bg); color: var(--header-text); padding: 15px 30px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1.1rem; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .status-button:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        @keyframes shake { 10%, 90% {transform: translate3d(-1px, 0, 0);} 20%, 80% {transform: translate3d(2px, 0, 0);} 30%, 50%, 70% {transform: translate3d(-4px, 0, 0);} 40%, 60% {transform: translate3d(4px, 0, 0);}}
+    </style>
+</head>
+<body>
+
+<!-- Incluimos el header estándar -->
+<header class="header">
+    <!-- ... Tu código completo del header ... -->
+</header>
+
+<main>
+    <div class="status-container">
+        <div class="status-icon error">
+            <i class="fa-solid fa-circle-xmark"></i>
+        </div>
+        <h1>Hubo un problema con tu pago</h1>
+        <p>No se pudo procesar la transacción. Por favor, verifica los datos ingresados en Mercado Pago o intenta con otro método de pago.</p>
+        <a th:href="@{/ficcion}" class="status-button">Volver a la tienda</a>
+    </div>
+</main>
+
+<!-- Incluimos el footer estándar -->
+<footer class="footer">
+    <!-- ... Tu código completo del footer ... -->
+</footer>
+
+</body>
+</html>

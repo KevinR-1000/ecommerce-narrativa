@@ -1,0 +1,761 @@
+/* Variables de colores */
+:root {
+    --color-principal: #5C4033;
+    --color-fondo-cuerpo: #D9CBB7;
+    --color-texto-cuerpo: #4B3F38;
+    --color-acento-sutil: #C8AE7D;
+    --color-texto-claro: #FFFFFF;
+
+    /* Colores para el carrito y elementos que requieren contraste con el fondo principal */
+    --color-fondo-claro-elementos: #FDF9F3;
+    --color-borde-elementos: #C8AE7D;
+    --color-texto-oscuro-elementos: #4B3F38;
+    --color-texto-medio-elementos: #7A6F62;
+
+    /* Colores para el modo oscuro */
+    --color-fondo-oscuro-general: #352C26;
+    --color-fondo-oscuro-elementos: #4B3F38;
+    --color-borde-oscuro-elementos: #7A6F62;
+    --color-texto-oscuro-claro: #E0E0E0;
+    --color-texto-oscuro-medio: #B0A298;
+
+    /* Colores funcionales */
+    --color-exito: #2ecc71;
+    --color-error: #E74C3C;
+    --color-hover-btn-principal: #4B3F38;
+    --color-hover-acento: #ffbc0e;
+}
+
+/* Imagen de fondo */
+.background {
+    width: 100%;
+    height: 700px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: var(--color-fondo-cuerpo);
+}
+
+/* Contenedor del login */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+#container {
+    font-family: 'Roboto', sans-serif;
+}
+
+.container{
+    background-color: var(--color-fondo-claro-elementos);
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+    width: 800px;
+    max-width: 100%;
+    min-height: 630px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.4s ease;
+}
+
+.container p{
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: 20px 0;
+    color: var(--color-texto-oscuro-elementos);
+}
+
+.container span{
+    font-size: 12px;
+    color: var(--color-texto-medio-elementos);
+}
+
+.container a{
+    color: var(--color-principal);
+    font-size: 13px;
+    text-decoration: none;
+    margin: 15px 0 10px;
+    transition: color 0.3s ease;
+}
+
+.container a:hover{
+    color: var(--color-hover-acento);
+}
+
+.container button{
+    background-color: var(--color-principal);
+    color: var(--color-texto-claro);
+    font-size: 12px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.container button.hidden{
+    background-color: transparent;
+    border-color: var(--color-texto-claro);
+}
+
+.container button:hover{
+    background-color: var(--color-hover-btn-principal);
+}
+
+.container form{
+    background-color: var(--color-fondo-claro-elementos);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    height: 100%;
+    transition: background-color 0.4s ease;
+}
+
+.container input{
+    background-color: #FFFFFF;
+    border: 1px solid #C8AE7D;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 4px;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+    outline: none;
+    color: #4B3F38;
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.container input::placeholder {
+    color: #7A6F62;
+    opacity: 1;
+}
+
+.container input:focus {
+    border-color: #5C4033;
+    box-shadow: 0 0 5px rgba(92, 64, 51, 0.4);
+}
+
+.container select {
+    background-color: #FFFFFF;
+    border: 1px solid #C8AE7D;
+    margin: 8px 0px;
+    padding: 10px 15px;
+    font-size: 13px;
+    border-radius: 8px;
+    outline: none;
+    align-items: left;
+    width: 108%;
+    color: #4B3F38;
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.container select:focus {
+    border-color: #5C4033;
+    box-shadow: 0 0 5px rgba(92, 64, 51, 0.4);
+}
+
+.container input[type="text"][maxlength="1"],
+.container input[type="number"][maxlength="1"] {
+    text-align: center;
+    width: 50px;
+    height: 50px;
+}
+
+.form-container{
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+}
+
+.sign-in{
+    left: 0;
+    width: 50%;
+    z-index: 2;
+}
+
+.container.active .sign-in{
+    transform: translateX(100%);
+}
+
+.sign-up{
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+
+.container.active .sign-up{
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: move 0.6s;
+}
+
+@keyframes move{
+    0%, 49.99%{
+        opacity: 0;
+        z-index: 1;
+    }
+    50%, 100%{
+        opacity: 1;
+        z-index: 5;
+    }
+}
+
+.social-icons{
+    margin: 20px 0;
+}
+
+.social-icons a{
+    border: 1px solid var(--color-borde-elementos);
+    border-radius: 20%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 3px;
+    width: 40px;
+    height: 40px;
+    color: var(--color-texto-oscuro-elementos);
+    transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.social-icons a:hover{
+    border-color: var(--color-principal);
+    color: var(--color-principal);
+}
+
+.toggle-container{
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: all 0.6s ease-in-out;
+    border-radius: 150px 0 0 100px;
+    z-index: 80;
+}
+
+.container.active .toggle-container{
+    transform: translateX(-100%);
+    border-radius: 0 150px 100px 0;
+}
+
+.toggle{
+    background-color: var(--color-principal);
+    background: linear-gradient(to right, var(--color-hover-btn-principal), var(--color-principal));
+    color: var(--color-texto-claro);
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+    z-index: 30;
+}
+
+.container.active .toggle{
+    transform: translateX(50%);
+}
+
+.toggle-panel{
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0px;
+    text-align: center;
+    top: 0;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+    z-index: 20;
+}
+
+.toggle-panel h1,
+.toggle-panel p {
+    color: var(--color-texto-claro);
+}
+
+.toggle-left{
+    transform: translateX(-200%);
+    z-index: 20;
+}
+
+.container.active .toggle-left{
+    transform: translateX(0);
+}
+
+.toggle-right{
+    right: 0;
+    transform: translateX(0);
+    z-index: 20;
+}
+
+.container.active .toggle-right{
+    transform: translateX(200%);
+}
+
+/* Estilo para el menú desplegable */
+.menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 30px;
+    display: flex;
+    align-items: center;
+    color: var(--color-principal);
+    transition: color 0.3s ease;
+}
+
+.menu-icon:hover {
+    color: var(--color-hover-acento);
+}
+
+.menu {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: var(--color-fondo-claro-elementos);
+    width: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.4s ease;
+}
+
+.menu.active {
+    display: flex;
+}
+
+.navegacion {
+    flex-direction: column;
+    gap: 15px;
+}
+
+.navegacion a {
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+    color: var(--color-texto-oscuro-elementos);
+}
+
+.navegacion a:hover {
+    background-color: var(--color-acento-sutil);
+    color: var(--color-texto-claro);
+}
+
+/* Menú siempre visible en pantallas grandes */
+@media (min-width: 768px) {
+    .menu {
+        display: flex;
+        position: static;
+        flex-direction: row;
+        box-shadow: none;
+        width: auto;
+        padding: 0;
+    }
+
+    .menu-icon {
+        display: none;
+    }
+
+    .navegacion {
+        flex-direction: row;
+        gap: 30px;
+    }
+}
+
+/* --- MODO OSCURO PARA LA SECCIÓN DE LOGIN Y MENÚ --- */
+
+body.oscuro .background {
+    background-color: var(--color-fondo-oscuro-general);
+}
+
+body.oscuro .container {
+    background-color: var(--color-fondo-oscuro-elementos);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+body.oscuro .container p,
+body.oscuro .container span {
+    color: var(--color-texto-oscuro-claro);
+}
+
+body.oscuro .container a {
+    color: var(--color-acento-sutil);
+}
+
+body.oscuro .container a:hover {
+    color: var(--color-texto-oscuro-claro);
+}
+
+body.oscuro .container button {
+    background-color: var(--color-principal);
+    color: var(--color-texto-claro);
+}
+
+body.oscuro .container button.hidden {
+    border-color: var(--color-texto-oscuro-claro);
+}
+
+body.oscuro .container button:hover {
+    background-color: var(--color-hover-btn-principal);
+}
+
+body.oscuro .container form {
+    background-color: var(--color-fondo-oscuro-elementos);
+}
+
+body.oscuro .container input,
+body.oscuro .container select {
+    background-color: #352C26;
+    border: 1px solid #7A6F62;
+    color: #E0E0E0;
+}
+
+body.oscuro .container input::placeholder {
+    color: #B0A298;
+}
+
+body.oscuro .container input:focus,
+body.oscuro .container select:focus {
+    border-color: #5C4033;
+    box-shadow: 0 0 5px rgba(92, 64, 51, 0.6);
+}
+
+body.oscuro .social-icons a {
+    border-color: var(--color-borde-oscuro-elementos);
+    color: var(--color-texto-oscuro-claro);
+}
+
+body.oscuro .social-icons a:hover {
+    border-color: var(--color-principal);
+    color: var(--color-principal);
+}
+
+body.oscuro .toggle {
+    background: linear-gradient(to right, var(--color-principal), var(--color-hover-btn-principal));
+    color: var(--color-texto-claro);
+}
+
+body.oscuro .toggle-panel h1,
+body.oscuro .toggle-panel p {
+    color: var(--color-texto-claro);
+}
+
+/* Menú desplegable en modo oscuro */
+body.oscuro .menu-icon {
+    color: var(--color-texto-oscuro-claro);
+}
+
+body.oscuro .menu-icon:hover {
+    color: var(--color-hover-acento);
+}
+
+body.oscuro .menu {
+    background-color: var(--color-fondo-oscuro-elementos);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+body.oscuro .navegacion a {
+    color: var(--color-texto-oscuro-claro);
+}
+
+body.oscuro .navegacion a:hover {
+    background-color: var(--color-principal);
+    color: var(--color-texto-claro);
+}
+
+/* Agrega esto al final de tu login.css */
+
+.error-message {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.success-message {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+
+/* ===== ESTILOS PARA LAS ALERTAS MODALES PERSONALIZADAS ===== */
+
+/* El fondo oscuro semitransparente que cubre toda la página */
+.alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+}
+
+.alert-overlay.show {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease;
+}
+
+/* La caja blanca de la alerta */
+.alert-box {
+    background-color: var(--color-fondo-claro-elementos);
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 90%;
+    width: 400px;
+    transform: scale(0.9);
+    transition: transform 0.4s ease;
+}
+
+.alert-overlay.show .alert-box {
+    transform: scale(1);
+}
+
+/* El icono (check verde) */
+.alert-icon {
+    font-size: 60px;
+    color: var(--color-exito); /* Usamos tu variable de color de éxito */
+    margin-bottom: 20px;
+}
+
+/* El mensaje de texto */
+.alert-message {
+    font-size: 1.3rem;
+    color: var(--color-texto-oscuro-elementos);
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+/* El botón "Aceptar" */
+.alert-button {
+    background-color: var(--color-principal);
+    color: var(--color-texto-claro);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.alert-button:hover {
+    background-color: var(--color-hover-btn-principal);
+}
+
+
+/* --- Estilos para la Alerta Personalizada (Toast) --- */
+.custom-alert {
+    position: fixed;
+    top: 100px; /* Un poco más abajo para no chocar con el header */
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: #fff;
+    font-size: 1rem;
+    z-index: 9999;
+
+    transform: translateX(120%);
+    opacity: 0;
+    visibility: hidden;
+
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.custom-alert.show {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Éxito (Login, Compra exitosa) */
+.custom-alert.alert-success {
+    background-color: #2a9d8f;
+    border-left: 5px solid #264653;
+}
+
+/* Información (Logout) */
+.custom-alert.alert-info {
+    background-color: #585149;
+    border-left: 5px solid #d4c4a3;
+}
+
+/* Error (Login fallido, validación) */
+.custom-alert.alert-error {
+    background-color: #e76f51; /* Un color naranja/rojo para errores */
+    border-left: 5px solid #c13c13;
+}
+
+
+/* --- Estilos para el Modal de Pago y sus Validaciones --- */
+.payment-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 2000; /* Más alto que el header */
+    justify-content: center;
+    align-items: center;
+}
+
+.payment-modal-overlay.visible {
+    display: flex;
+}
+
+.payment-modal {
+    background: #FDF9F3; /* Usando un color de tu paleta */
+    color: #4B3F38; /* Usando un color de tu paleta */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+}
+
+.payment-modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #7A6F62;
+}
+
+.payment-modal h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--color-principal);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.btn-confirmar-pago {
+    width: 100%;
+    padding: 12px;
+    background-color: #2a9d8f; /* Usando el mismo verde que la alerta de éxito */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.btn-confirmar-pago:hover {
+    background-color: #264653;
+}
+
+.btn-confirmar-pago:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.payment-error {
+    color: #c13c13;
+    background-color: #fde8e1;
+    border: 1px solid #e76f51;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+.spinner-border {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #fff;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Estilo para los mensajes de error de los campos */
+.error-message {
+    color: #c13c13; /* Un rojo más oscuro para mejor contraste */
+    font-size: 0.8rem;
+    display: block;
+    height: 1em;
+    margin-top: 4px;
+}
+
+/* Estilo para el borde del input cuando es inválido */
+input.invalid {
+    border-color: #c13c13;
+    box-shadow: 0 0 0 1px #e76f51;
+}
