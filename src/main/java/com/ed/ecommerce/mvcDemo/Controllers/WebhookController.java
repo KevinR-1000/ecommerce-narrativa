@@ -1,6 +1,7 @@
 package com.ed.ecommerce.mvcDemo.Controllers;
 
 import com.mercadopago.client.payment.PaymentClient;
+import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.payment.Payment;
 import com.ed.ecommerce.mvcDemo.Service.VentaService;
 import org.springframework.http.HttpStatus;
@@ -10,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-// CAMBIO 1: La ruta base ahora es solo "/webhook".
-@RequestMapping("/webhook")
+@RequestMapping("/webhook") // Escuchando en /webhook
 public class WebhookController {
 
     private final VentaService ventaService;
@@ -20,46 +20,83 @@ public class WebhookController {
         this.ventaService = ventaService;
     }
 
-    // CAMBIO 2: El método ahora escucha en la raíz del controlador,
-    // por lo que la ruta completa es simplemente "/webhook".
     @PostMapping
     public ResponseEntity<Void> recibirNotificacion(@RequestBody Map<String, Object> notification) {
-
-        System.out.println("--- ¡Webhook de Mercado Pago recibido en /webhook! ---");
+        // Log #1: Imprime el cuerpo completo de la notificación
+        System.out.println("--- Webhook Recibido ---");
+        System.out.println("Cuerpo de la notificación: " + notification);
 
         try {
-            if ("payment".equals(notification.get("type"))) {
-                // El resto del código es correcto y no necesita cambios.
-                String paymentIdStr = ((Map<String, Object>) notification.get("data")).get("id").toString();
-                Long paymentId = Long.parseLong(paymentIdStr);
+            String type = (String) notification.get("type");
+            if (type == null) {
+                System.out.println("El campo 'type' es nulo. Ignorando notificación.");
+                return ResponseEntity.badRequest().build();
+            }
 
+            // Nos interesa solo el evento de 'payment'
+            if ("payment".equals(type)) {
+                System.out.println("Notificación de tipo 'payment' detectada.");
+
+                Object dataObj = notification.get("data");
+                if (!(dataObj instanceof Map)) {
+                    System.err.println("El campo 'data' no es un objeto válido.");
+                    return ResponseEntity.badRequest().build();
+                }
+
+                Map<String, Object> data = (Map<String, Object>) dataObj;
+                Object idObj = data.get("id");
+
+                if (idObj == null) {
+                    System.err.println("El campo 'data.id' es nulo.");
+                    return ResponseEntity.badRequest().build();
+                }
+
+                long paymentId = Long.parseLong(idObj.toString());
                 System.out.println("ID del Pago notificado: " + paymentId);
 
+                // Log #2: Justo antes de consultar la API de Mercado Pago
+                System.out.println("Consultando el estado del pago a la API de Mercado Pago...");
                 PaymentClient client = new PaymentClient();
                 Payment payment = client.get(paymentId);
+                // Log #3: Justo después de consultar la API
+                System.out.println("Consulta a la API exitosa.");
 
-                if (payment != null && "approved".equals(payment.getStatus())) {
-                    System.out.println("Estado del pago: APROBADO.");
+                if (payment == null) {
+                    System.err.println("No se encontró información para el pago con ID: " + paymentId);
+                    return ResponseEntity.notFound().build();
+                }
 
+                String status = payment.getStatus();
+                System.out.println("Estado del pago en Mercado Pago: " + status);
+
+                if ("approved".equals(status)) {
                     String ventaIdStr = payment.getExternalReference();
-
-                    if (ventaIdStr != null) {
-                        System.out.println("Procesando venta local con ID (External Reference): " + ventaIdStr);
+                    if (ventaIdStr != null && !ventaIdStr.isEmpty()) {
+                        System.out.println("Pago APROBADO. Procesando venta local con ID: " + ventaIdStr);
                         ventaService.confirmarYProcesarVentaPorId(Integer.parseInt(ventaIdStr));
+                        System.out.println("Venta procesada exitosamente.");
                     } else {
-                        System.err.println("Error: No se encontró el external_reference en el pago " + paymentId);
+                        System.err.println("Error: No se encontró external_reference en el pago aprobado " + paymentId);
                     }
                 } else {
-                    String status = (payment != null) ? payment.getStatus() : "desconocido";
-                    System.out.println("Estado del pago: " + status + ". No se procesa la venta.");
+                    System.out.println("El pago no está aprobado. Estado: " + status + ". No se procesa la venta.");
                 }
+            } else {
+                System.out.println("Notificación de tipo '" + type + "' recibida. No es un evento de pago, se ignora.");
             }
+
+            // Si todo va bien, devolvemos un 200 OK.
             return ResponseEntity.ok().build();
 
+        } catch (MPException | com.mercadopago.exceptions.MPApiException apiException) {
+            System.err.println("Error de la API de Mercado Pago al procesar el webhook: " + apiException.getMessage());
+            apiException.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build(); // Indicar a MP que reintente
         } catch (Exception e) {
+            // Si cualquier otra cosa falla, lo registramos.
             System.err.println("Error fatal al procesar el webhook: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-}
+}git add .
