@@ -1,4 +1,3 @@
-// Archivo: src/main/java/com/ed/ecommerce/mvcDemo/Controllers/WebhookController.java
 package com.ed.ecommerce.mvcDemo.Controllers;
 
 import com.mercadopago.client.payment.PaymentClient;
@@ -11,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/pagos")
+// CAMBIO 1: La ruta base ahora es solo "/webhook".
+@RequestMapping("/webhook")
 public class WebhookController {
 
     private final VentaService ventaService;
@@ -20,13 +20,16 @@ public class WebhookController {
         this.ventaService = ventaService;
     }
 
-    @PostMapping("/notificacion")
+    // CAMBIO 2: El método ahora escucha en la raíz del controlador,
+    // por lo que la ruta completa es simplemente "/webhook".
+    @PostMapping
     public ResponseEntity<Void> recibirNotificacion(@RequestBody Map<String, Object> notification) {
 
-        System.out.println("--- ¡Webhook de Mercado Pago recibido! ---");
+        System.out.println("--- ¡Webhook de Mercado Pago recibido en /webhook! ---");
 
         try {
             if ("payment".equals(notification.get("type"))) {
+                // El resto del código es correcto y no necesita cambios.
                 String paymentIdStr = ((Map<String, Object>) notification.get("data")).get("id").toString();
                 Long paymentId = Long.parseLong(paymentIdStr);
 
@@ -35,7 +38,7 @@ public class WebhookController {
                 PaymentClient client = new PaymentClient();
                 Payment payment = client.get(paymentId);
 
-                if ("approved".equals(payment.getStatus())) {
+                if (payment != null && "approved".equals(payment.getStatus())) {
                     System.out.println("Estado del pago: APROBADO.");
 
                     String ventaIdStr = payment.getExternalReference();
@@ -47,7 +50,8 @@ public class WebhookController {
                         System.err.println("Error: No se encontró el external_reference en el pago " + paymentId);
                     }
                 } else {
-                    System.out.println("Estado del pago: " + payment.getStatus() + ". No se procesa la venta.");
+                    String status = (payment != null) ? payment.getStatus() : "desconocido";
+                    System.out.println("Estado del pago: " + status + ". No se procesa la venta.");
                 }
             }
             return ResponseEntity.ok().build();
