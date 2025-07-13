@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.mercadopago.MercadoPagoConfig;
 
-import java.math.BigDecimal; // Asegúrate de tener esta importación
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,14 +40,7 @@ public class MercadoPagoService {
         Venta ventaPendiente = ventaService.crearVentaPendiente(itemsDelCarrito, loggedInUserEmail);
 
         List<PreferenceItemRequest> mpItems = new ArrayList<>();
-        BigDecimal totalAmount = BigDecimal.ZERO; // Para verificar el total
-        System.out.println("--- Creando Preferencia de Pago ---");
-        System.out.println("Venta Local ID: " + ventaPendiente.getIdVenta());
-        System.out.println("Usuario logueado: " + loggedInUserEmail);
-        System.out.println("Email del vendedor: " + sellerEmail);
-
         for (CarritoItemDTO item : itemsDelCarrito) {
-            totalAmount = totalAmount.add(item.getPrice().multiply(new BigDecimal(item.getQuantity())));
             PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
                     .id(item.getProductId().toString())
                     .title(item.getName())
@@ -57,13 +50,12 @@ public class MercadoPagoService {
                     .build();
             mpItems.add(itemRequest);
         }
-        System.out.println("Monto total de los ítems: " + totalAmount);
 
-        // Lógica para asegurar que el comprador no sea el vendedor
-        String payerEmailToSend = loggedInUserEmail.equalsIgnoreCase(sellerEmail)
-                ? "test_user_12345678@testuser.com" // Email de prueba genérico de MP
-                : loggedInUserEmail;
-        System.out.println("Email del comprador (Payer) enviado a MP: " + payerEmailToSend);
+        // --- CAMBIO CLAVE Y DEFINITIVO ---
+        // Para el Sandbox, SIEMPRE usaremos un comprador de prueba válido.
+        // Esto evita que Mercado Pago rechace la transacción.
+        String payerEmailToSend = "test_user_12345678@testuser.com";
+        System.out.println("Email del comprador (Payer) forzado para Sandbox: " + payerEmailToSend);
 
         PreferencePayerRequest payer = PreferencePayerRequest.builder().email(payerEmailToSend).build();
 
@@ -88,7 +80,6 @@ public class MercadoPagoService {
         ventaService.guardarVenta(ventaPendiente);
 
         System.out.println("Preferencia creada exitosamente. Preference de MP ID: " + preference.getId());
-        System.out.println("------------------------------------");
         return preference;
     }
 }
