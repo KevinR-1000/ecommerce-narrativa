@@ -16,7 +16,7 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 		<!-- AÑADIDO: Propiedad global para la codificación de caracteres -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -77,8 +77,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.11.0</version> <!-- Es buena práctica especificar una versión -->
 				<configuration>
-					<source>21</source> <!-- Nivel de Java para el código fuente -->
-					<target>21</target> <!-- Nivel de Java para el código compilado -->
+					<source>17</source> <!-- Nivel de Java para el código fuente -->
+					<target>17</target> <!-- Nivel de Java para el código compilado -->
 					<encoding>UTF-8</encoding> <!-- Codificación para la compilación -->
 				</configuration>
 			</plugin>
