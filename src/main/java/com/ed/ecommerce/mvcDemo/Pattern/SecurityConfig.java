@@ -1,3 +1,5 @@
+
+// Archivo: src/main/java/com/ed/ecommerce/mvcDemo/Pattern/SecurityConfig.java
 package com.ed.ecommerce.mvcDemo.Pattern;
 
 import com.ed.ecommerce.mvcDemo.Repository.UsuarioRepository;
@@ -60,21 +62,23 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/registro")
                         ).permitAll()
-                        // --- LÍNEA AÑADIDA Y CRUCIAL ---
-                        // Permite las peticiones POST anónimas a nuestro webhook.
-                        .requestMatchers(new AntPathRequestMatcher("/webhook")).permitAll()
+                        // ¡IMPORTANTE! Permite que cualquiera acceda a la API de ventas.
+                        // Para producción, esto debería ser .authenticated()
                         .requestMatchers(new AntPathRequestMatcher("/api/ventas/procesar")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/pagos/notificacion")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
+                        // --- INICIO DE MODIFICACIÓN PARA LOGIN ---
                         .successHandler((request, response, authentication) -> {
-                            String nombre = authentication.getName();
+                            String nombre = authentication.getName(); // Obtiene el correo
                             request.getSession().setAttribute("alertMessage", "¡Bienvenido, " + nombre + "!");
-                            response.sendRedirect("/");
+                            response.sendRedirect("/"); // Redirige a la página principal
                         })
-                        .failureUrl("/login?error")
+                        // --- FIN DE MODIFICACIÓN ---
+                        .failureUrl("/login?error") // Cambiado a solo 'error'
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -82,12 +86,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
-                // --- ¡IMPORTANTE! ---
-                // Desactivamos CSRF para la ruta del webhook específicamente, en lugar de para toda la app.
-                // Es una práctica más segura.
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(new AntPathRequestMatcher("/webhook"))
-                );
+                .csrf(csrf -> csrf.disable());
         return http.build();
     }
 }
