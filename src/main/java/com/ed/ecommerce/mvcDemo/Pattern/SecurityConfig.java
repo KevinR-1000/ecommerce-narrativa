@@ -60,10 +60,9 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/registro")
                         ).permitAll()
-                        // --- LÍNEA AÑADIDA Y CRUCIAL ---
-                        // Permite las peticiones POST anónimas a nuestro webhook.
+                        // Permite el acceso a todas nuestras rutas de API
+                        .requestMatchers(new AntPathRequestMatcher("/api/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/webhook")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/ventas/procesar")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -82,12 +81,9 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
-                // --- ¡IMPORTANTE! ---
-                // Desactivamos CSRF para la ruta del webhook específicamente, en lugar de para toda la app.
-                // Es una práctica más segura.
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers(new AntPathRequestMatcher("/webhook"))
-                );
+                // --- CAMBIO CLAVE ---
+                // Desactivamos CSRF por completo para la prueba.
+                .csrf(csrf -> csrf.disable());
         return http.build();
     }
 }
